@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.logger = exports.swaggerConfig = exports.appConfig = void 0;
+var config_1 = require("@nestjs/config");
+var configuration_1 = require("../.././configuration/configuration");
+var winston_factory_1 = require("../.././configuration/logging/winston.factory");
+var configService = new config_1.ConfigService((0, configuration_1.default)());
+var logger = (0, winston_factory_1.LoggerFactory)('main');
+exports.logger = logger;
+var appConfig = configService.get('appConfig');
+exports.appConfig = appConfig;
+var swaggerConfig = configService.get('swagger');
+exports.swaggerConfig = swaggerConfig;
