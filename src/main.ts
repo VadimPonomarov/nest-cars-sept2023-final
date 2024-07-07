@@ -8,8 +8,10 @@ import {
   logging,
   swaggerConf,
 } from './common/constants/app.main.constants';
+import { configService, ConfigType } from './common/configuration/configuration';
 
 async function bootstrap() {
+  const appConfig = configService.get<ConfigType['appConfig']>('appConfig');
   const app = await NestFactory.create(AppModule, {
     logger: logging.LOGGER ? new ConsoleLogger() : false,
   });
@@ -32,6 +34,9 @@ async function bootstrap() {
   await app.listen(appConf.PORT, () => {
     try {
       Logger.log(`Server is running on port: ${appConf.PORT}`);
+      console.log(
+        `Swagger running on http://${appConfig.HOST}:${appConfig.PORT}/docs`,
+      );
     } catch (e) {
       Logger.error(e);
     }
