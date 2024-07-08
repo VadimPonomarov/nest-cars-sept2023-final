@@ -68,7 +68,7 @@ export class AdsService {
       GptTasks.CAR_TYPE_MARK_MODEL([dto.type, dto.mark, dto.model].join()),
     );
     const [type, mark, model] = carTypeMarkModel.split(',');
-    const [ country, region, locality ] = dto.address.split(',').reverse();
+    const [country, region, locality] = dto.address.split(',').reverse();
     const _geo = await this.getGeo({ country, region, locality });
     const _ads = this.adsRepository.create({
       ...dto,
@@ -89,8 +89,16 @@ export class AdsService {
     );
   }
 
+  async updateAdsByIdWithoutTextValidation(
+    adsId: string,
+    dto: UpdateAdsDto,
+  ): Promise<Partial<CreateAdsResDto>> {
+    const _ads = await this.adsRepository.findOneByOrFail({ id: adsId });
+    return await this.adsRepository.save({ ..._ads, ...dto });
+  }
+
   async getAdsManyByUserId(userId: string): Promise<CarAdsEntity[]> {
-    return await this.adsRepository.find({ where:{userId} });
+    return await this.adsRepository.find({ where: { userId } });
   }
 
   async deleteUserAdsById(userId: string, adsId: string): Promise<void> {

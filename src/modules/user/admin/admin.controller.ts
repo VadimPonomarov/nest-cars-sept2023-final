@@ -1,19 +1,5 @@
-import {
-  Body,
-  Controller,
-  Param, ParseUUIDPipe,
-  Patch,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Param, ParseUUIDPipe, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { AccountsEnum } from '../../../common/enums/accounts.enum';
@@ -24,6 +10,9 @@ import { UserEntity } from '../../db/entities/user.entity';
 import { SetSuperAdminDto } from '../dto/req/set.admin.dto';
 import { UpdateRolesDto } from '../dto/req/update.roles.dto';
 import { AdminService } from './admin.service';
+import { UpdateAdsDto } from '../../ads/dto/req/update.ads.dto';
+import { CreateAdsResDto } from '../../ads/dto/res/create.ads.res.dto';
+import { AdsService } from '../../ads/ads.service';
 
 /*---------------------*/
 
@@ -32,7 +21,8 @@ import { AdminService } from './admin.service';
 @ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {
+  constructor(private readonly adminService: AdminService,
+              private readonly adsService: AdsService) {
   }
 
   @ApiOperation({
@@ -148,6 +138,22 @@ export class AdminController {
   ): Promise<Partial<UserEntity>> {
     return await this.adminService.updateUserByEmail(userEmail, updateDto);
   }
-}
 
 /*---------------------*/
+
+  @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
+  @ApiOperation({
+    summary: 'Amin and manager can update ads by it\'s Id',
+  })
+  @ApiParam({ name: 'adsId', type: String, required: true })
+  @Patch(':adsId')
+  async updateAdsById(
+    @Param('adsId', ParseUUIDPipe) adsId: string,
+    @Body() dto: UpdateAdsDto,
+  ): Promise<Partial<CreateAdsResDto>> {
+    return await this.adsService.updateAdsByIdWithoutTextValidation(adsId, dto);
+  }
+}
+
+
+

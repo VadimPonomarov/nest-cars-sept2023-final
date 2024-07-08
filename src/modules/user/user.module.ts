@@ -9,11 +9,13 @@ import { AdminController } from './admin/admin.controller';
 import { AdminService } from './admin/admin.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { AdsModule } from '../ads/ads.module';
 
 @Module({
   imports: [
     RepositoryModule,
     MailModule,
+    forwardRef(()=>AdsModule),
     forwardRef(() => AuthModule),
     DbModule,
     LoggingModule,
