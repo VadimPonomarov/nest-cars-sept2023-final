@@ -143,7 +143,7 @@ export class AdminController {
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
   @ApiOperation({
-    summary: 'Amin and manager can update ads by it\'s Id',
+    summary: 'Admin and manager can update ads by it\'s Id',
   })
   @ApiParam({ name: 'adsId', type: String, required: true })
   @Patch(':adsId')
