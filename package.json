@@ -9,7 +9,7 @@
     "kill": "netstat -ano | findstr :3000",
     "kill:sid": "tskill",
     "format": "prettier --write \"src/**/*.ts\"",
-    "build": "nest build",
+    "build": "nest build && tsc",
     "start": "nest start --watch",
     "start:debug": "npm run build && node dist/main --debug --watch",
     "start:dev": "node dist/main",
