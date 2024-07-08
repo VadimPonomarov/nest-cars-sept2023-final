@@ -13,6 +13,8 @@ import { AdsRepository } from '../repository/services/ads.repository';
 import { UserRepository } from '../repository/services/user.repository';
 import { CreateAdsDto } from './dto/req/create.ads.dto';
 import { CreateAdsResDto } from './dto/res/create.ads.res.dto';
+import { UpdateAdsDto } from './dto/req/update.ads.dto';
+import { CarAdsEntity } from '../db/entities/car.ads.entity';
 
 @Injectable()
 export class AdsService {
@@ -55,14 +57,46 @@ export class AdsService {
     );
   }
 
-  async getAdsManyByUserId(userId: string): Promise<CreateAdsResDto[]> {
-    return await this.adsRepository.find({ where: { userId } });
+  async updateAdsById(
+    userId: string,
+    adsId: string,
+    dto: UpdateAdsDto,
+  ): Promise<Partial<CreateAdsResDto>> {
+    dto['title'] = await this.validateText(GptTasks.NO_BAD_WORDS(dto.title));
+    dto['text'] = await this.validateText(GptTasks.NO_BAD_WORDS(dto.text));
+    const carTypeMarkModel: string = await this.validateText(
+      GptTasks.CAR_TYPE_MARK_MODEL([dto.type, dto.mark, dto.model].join()),
+    );
+    const [type, mark, model] = carTypeMarkModel.split(',');
+    const [ country, region, locality ] = dto.address.split(',').reverse();
+    const _geo = await this.getGeo({ country, region, locality });
+    const _ads = this.adsRepository.create({
+      ...dto,
+      type: type.trim(),
+      mark: mark.trim(),
+      model: model.trim(),
+      address: takeRight(_geo[1].split(','), 3).join().trim(),
+      ..._geo[2],
+    });
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const ads = await this.adsRepository.save({
+      ..._ads,
+      user,
+      isActive: !includes((dto.title + dto.text), '*'),
+    });
+    return await ObjectMapper.getMapped<CreateAdsResDto>(
+      this.adsRepository.findOne({ where: { id: ads.id } }),
+    );
+  }
+
+  async getAdsManyByUserId(userId: string): Promise<CarAdsEntity[]> {
+    return await this.adsRepository.find({ where:{userId} });
   }
 
   async deleteUserAdsById(userId: string, adsId: string): Promise<void> {
-      const _ads = await this.adsRepository.findOneByOrFail({ id: adsId });
-      if (!_ads) throw new NotFoundException();
-      await this.adsRepository.remove(_ads);
+    const _ads = await this.adsRepository.findOneByOrFail({ id: adsId });
+    if (!_ads) throw new NotFoundException();
+    await this.adsRepository.remove(_ads);
   }
 
   async getAdsByAdsId(id: string): Promise<CreateAdsResDto> {

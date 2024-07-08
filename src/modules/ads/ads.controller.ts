@@ -5,7 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
-  ParseUUIDPipe,
+  ParseUUIDPipe, Patch,
   Post,
   Request,
   Res,
@@ -22,6 +22,7 @@ import { CreateAdsResDto } from './dto/res/create.ads.res.dto';
 import { RolesEnum } from '../../common/enums/roles.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Response } from 'express';
+import { UpdateAdsDto } from './dto/req/update.ads.dto';
 
 @UseGuards(JwtSkipAuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -41,6 +42,27 @@ export class AdsController {
     @Body() dto: CreateAdsDto,
   ): Promise<Partial<CreateAdsResDto>> {
     return await this.adsService.createAds(req.user.id, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Update current User\'s ads by it\'s Id',
+  })
+  @ApiParam({ name: 'adsId', type: String, required: true })
+  @Patch(':adsId')
+  async updateAds(
+    @Request() req,
+    @Param('adsId', ParseUUIDPipe) adsId: string,
+    @Body() dto: UpdateAdsDto,
+  ): Promise<Partial<CreateAdsResDto>> {
+    return await this.adsService.updateAdsById(req.user.id, adsId, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Get current User\'s list of ads by adsId',
+  })
+  @Get('user/me')
+  async getMyAds(@Request() req): Promise<CreateAdsResDto[]> {
+    return await this.adsService.getAdsManyByUserId(req.user.id);
   }
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
@@ -63,14 +85,6 @@ export class AdsController {
   @Get(':adsId')
   async getByAdsId(@Param('adsId', ParseUUIDPipe) adsId: string): Promise<CreateAdsResDto> {
     return await this.adsService.getAdsByAdsId(adsId);
-  }
-
-  @ApiOperation({
-    summary: 'Get current User\'s list of ads by adsId',
-  })
-  @Get('user/me')
-  async getMyAds(@Request() req): Promise<CreateAdsResDto> {
-    return await this.adsService.getAdsManyByUserId(req.user.id);
   }
 
   @ApiOperation({
