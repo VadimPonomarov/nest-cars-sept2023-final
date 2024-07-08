@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { takeRight } from 'lodash';
+import { includes, takeRight } from 'lodash';
 
 import { ObjectMapper } from '../../common/mappers/object.mapper';
 import { GptTasks } from '../g4f/constants/gpt.tasks';
@@ -48,7 +48,7 @@ export class AdsService {
     const ads = await this.adsRepository.save({
       ..._ads,
       user,
-      isActive: !(dto.title + dto.text).match(/[*]/g).length,
+      isActive: !includes((dto.title + dto.text), '*'),
     });
     return await ObjectMapper.getMapped<CreateAdsResDto>(
       this.adsRepository.findOne({ where: { id: ads.id } }),
