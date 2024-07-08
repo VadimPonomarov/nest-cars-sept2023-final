@@ -14,7 +14,6 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { IsEmail } from 'class-validator';
 
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { AccountsEnum } from '../../../common/enums/accounts.enum';
@@ -131,7 +130,7 @@ export class AdminController {
   })
   @ApiParam({
     name: 'userEmail',
-    type: IsEmail(),
+    type: String,
     required: true,
   })
   @ApiBody({
