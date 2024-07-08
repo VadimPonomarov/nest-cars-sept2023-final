@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { JwtSkipAuthGuard } from '../auth/guards/jwt.skip.auth.guard';
@@ -53,9 +53,16 @@ export class AdsController {
   @ApiOperation({
     summary: 'Get current User\'s list of ads by adsId',
   })
-
   @Get('me')
   async getMyAds(@Request() req): Promise<CreateAdsResDto> {
-    return await this.adsService.getAdsManyByUserId(req.user);
+    return await this.adsService.getAdsManyByUserId(req.user.id);
+  }
+
+  @ApiOperation({
+    summary: 'Delete current User\'s ads by adsId',
+  })
+  @Delete('me/:adsId')
+  async deleteMeByAdsId(@Request() req, @Param() adsId: string): Promise<void> {
+    return await this.adsService.deleteUserAdsById(req.user.id, adsId);
   }
 }

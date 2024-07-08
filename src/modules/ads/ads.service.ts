@@ -59,6 +59,12 @@ export class AdsService {
     return await this.adsRepository.find({ where: { userId } });
   }
 
+  async deleteUserAdsById(userId: string, adsId: string): Promise<void> {
+    const _user = await this.userRepository.findOneBy({ id: userId });
+    _user.ads = await _user.ads.filter(item => item.id !== adsId);
+    await this.userRepository.save(_user);
+  }
+
   async getAdsByAdsId(id: string): Promise<CreateAdsResDto> {
     return await this.adsRepository.find({ where: { id } });
   }

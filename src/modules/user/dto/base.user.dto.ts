@@ -25,7 +25,7 @@ export class BaseUserDto implements UserEntity {
   email: string;
 
   @IsBoolean()
-  @ApiProperty({ example: 'false', default: false })
+  @ApiProperty({ example: 'true', default: false })
   isActive?: boolean;
 
   @IsBoolean()
