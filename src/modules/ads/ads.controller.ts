@@ -58,8 +58,9 @@ export class AdsController {
   })
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
+  @ApiParam({ name: 'adsId', type: String, required: true })
   @Get(':adsId')
-  async getByAdsId(@Param() adsId: string): Promise<CreateAdsResDto> {
+  async getByAdsId(@Param('adsId', ParseUUIDPipe) adsId: string): Promise<CreateAdsResDto> {
     return await this.adsService.getAdsByAdsId(adsId);
   }
 
