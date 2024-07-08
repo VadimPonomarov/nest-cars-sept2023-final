@@ -47,14 +47,14 @@ export class AdsController {
   @ApiOperation({
     summary: 'Get list of ads by userId',
   })
-  @Get(':userId')
+  @Get('user/:userId')
   async getByUserId(@Param() userId: string): Promise<CreateAdsResDto[]> {
     return await this.adsService.getAdsManyByUserId(userId);
   }
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
   @ApiOperation({
-    summary: 'Get list of ads by adsId',
+    summary: 'Get ads by adsId',
   })
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
@@ -66,7 +66,7 @@ export class AdsController {
   @ApiOperation({
     summary: 'Get current User\'s list of ads by adsId',
   })
-  @Get('me')
+  @Get('user/me')
   async getMyAds(@Request() req): Promise<CreateAdsResDto> {
     return await this.adsService.getAdsManyByUserId(req.user.id);
   }
@@ -76,7 +76,7 @@ export class AdsController {
   })
   @ApiOkResponse({ description: 'Success' })
   @ApiParam({ name: 'adsId', type: String, required: true })
-  @Delete('me/:adsId')
+  @Delete('user/me/:adsId')
   async deleteMeByAdsId(@Request() req, @Param('adsId', ParseUUIDPipe) adsId: string, @Res() res: Response): Promise<unknown> {
     try {
       await this.adsService.deleteUserAdsById(req.user.id, adsId);
