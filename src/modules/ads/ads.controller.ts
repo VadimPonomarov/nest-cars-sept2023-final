@@ -50,13 +50,12 @@ export class AdsController {
     return await this.adsService.getAdsByAdsId(adsId);
   }
 
-  @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
   @ApiOperation({
-    summary: 'Get list of ads by adsId',
+    summary: 'Get current User\'s list of ads by adsId',
   })
 
   @Get('me')
-  async getMyyAds(@Request() req): Promise<CreateAdsResDto> {
+  async getMyAds(@Request() req): Promise<CreateAdsResDto> {
     return await this.adsService.getAdsManyByUserId(req.user);
   }
 }
