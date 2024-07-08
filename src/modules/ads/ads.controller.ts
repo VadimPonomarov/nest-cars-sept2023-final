@@ -1,5 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Request,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
 import { JwtSkipAuthGuard } from '../auth/guards/jwt.skip.auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -9,6 +21,7 @@ import { CreateAdsDto } from './dto/req/create.ads.dto';
 import { CreateAdsResDto } from './dto/res/create.ads.res.dto';
 import { RolesEnum } from '../../common/enums/roles.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { Response } from 'express';
 
 @UseGuards(JwtSkipAuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -61,8 +74,15 @@ export class AdsController {
   @ApiOperation({
     summary: 'Delete current User\'s ads by adsId',
   })
+  @ApiOkResponse({ description: 'Success' })
+  @ApiParam({ name: 'adsId', type: String, required: true })
   @Delete('me/:adsId')
-  async deleteMeByAdsId(@Request() req, @Param() adsId: string): Promise<void> {
-    return await this.adsService.deleteUserAdsById(req.user.id, adsId);
+  async deleteMeByAdsId(@Request() req, @Param('adsId', ParseUUIDPipe) adsId: string, @Res() res: Response): Promise<unknown> {
+    try {
+      await this.adsService.deleteUserAdsById(req.user.id, adsId);
+      return res.status(HttpStatus.OK).send('!!! Success');
+    } catch (e) {
+      return res.status(HttpStatus.NOT_FOUND).send('!!! Fail');
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { includes, takeRight } from 'lodash';
 
 import { ObjectMapper } from '../../common/mappers/object.mapper';
@@ -60,9 +60,9 @@ export class AdsService {
   }
 
   async deleteUserAdsById(userId: string, adsId: string): Promise<void> {
-    const _user = await this.userRepository.findOneBy({ id: userId });
-    _user.ads = await _user.ads.filter(item => item.id !== adsId);
-    await this.userRepository.save(_user);
+      const _ads = await this.adsRepository.findOneByOrFail({ id: adsId });
+      if (!_ads) throw new NotFoundException();
+      await this.adsRepository.remove(_ads);
   }
 
   async getAdsByAdsId(id: string): Promise<CreateAdsResDto> {
