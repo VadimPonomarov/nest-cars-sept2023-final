@@ -10,7 +10,7 @@
     "kill:sid": "tskill",
     "format": "prettier --write \"src/**/*.ts\"",
     "build": "nest build && tsc",
-    "start": "nest start --watch",
+    "start": "npm run build && node dist/main",
     "start:debug": "npm run build && node dist/main --debug --watch",
     "start:dev": "node dist/main",
     "start:prod": "node dist/main --env-file .env ",
