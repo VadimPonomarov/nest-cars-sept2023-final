@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  Param,
+  Param, ParseUUIDPipe,
   Patch,
   Post,
   Request,
@@ -33,7 +33,8 @@ import { AdminService } from './admin.service';
 @ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) {
+  }
 
   @ApiOperation({
     summary: 'Grants current User roles of SuperUser. Secret JWT is required',
@@ -79,6 +80,8 @@ export class AdminController {
     required: true,
   })
   @Roles([RolesEnum.ADMIN])
+  @ApiParam({ name: 'action', enum: AccountsEnum, type: 'enum', required: true })
+  @ApiParam({ name: 'userEmail', type: String, required: true })
   @Patch('roles/:action/:userEmail')
   async grantRoles(
     @Param('action') action: RolesActionEnum,
@@ -111,9 +114,11 @@ export class AdminController {
     enum: AccountsEnum,
     required: true,
   })
+  @ApiParam({ name: 'userId', type: String, required: true })
+  @ApiParam({ name: 'type', type: 'enum', enum: AccountsEnum, required: true })
   @Patch('account/:userId/:type')
   async changeAccountType(
-    @Param('userId') userId: string,
+    @Param('userId', ParseUUIDPipe) userId: string,
     @Param() type: AccountsEnum,
   ): Promise<Partial<any>> {
     return await this.adminService.updateAccountByUserId(userId, type);

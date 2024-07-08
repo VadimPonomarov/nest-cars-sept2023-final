@@ -12,7 +12,7 @@ import {
   ApiBody,
   ApiExcludeEndpoint,
   ApiOkResponse,
-  ApiOperation,
+  ApiOperation, ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -77,6 +77,7 @@ export class UserController {
   })
   @SkipJwtAuth()
   @UseGuards(ActivateUserGuard)
+  @ApiParam({ name: 'activateToken', type: String, required: true })
   @Get('activate/:activateToken')
   async activate(
     @Param() activateToken: string,
