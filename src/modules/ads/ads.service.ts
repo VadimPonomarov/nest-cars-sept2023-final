@@ -100,7 +100,7 @@ export class AdsService {
   }
 
   async getAdsByAdsId(id: string): Promise<CreateAdsResDto> {
-    return await this.adsRepository.find({ where: { id } });
+    return await this.adsRepository.findOneOrFail({ where: { id } });
   }
 
   async getActiveAdsNumberByUserId(userId: string): Promise<any> {
