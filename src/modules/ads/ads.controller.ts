@@ -41,7 +41,7 @@ export class AdsController {
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
   @ApiOperation({
-    summary: 'Get list of ads by userId',
+    summary: 'Get list of ads by adsId',
   })
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
