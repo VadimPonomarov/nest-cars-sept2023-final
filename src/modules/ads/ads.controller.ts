@@ -47,8 +47,9 @@ export class AdsController {
   @ApiOperation({
     summary: 'Get list of ads by userId',
   })
+  @ApiParam({ name: 'userId', type: String, required: true })
   @Get('user/:userId')
-  async getByUserId(@Param() userId: string): Promise<CreateAdsResDto[]> {
+  async getByUserId(@Param('userId', ParseUUIDPipe) userId: string): Promise<CreateAdsResDto[]> {
     return await this.adsService.getAdsManyByUserId(userId);
   }
 
