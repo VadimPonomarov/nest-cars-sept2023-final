@@ -7,7 +7,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBasicAuth,
   ApiBearerAuth,
   ApiBody,
   ApiConflictResponse,
@@ -15,7 +14,6 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 

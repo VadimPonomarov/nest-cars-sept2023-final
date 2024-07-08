@@ -30,7 +30,8 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly accountRepository: AccountRepository,
     private readonly mailService: MailService,
-  ) {}
+  ) {
+  }
 
   public async create(dto: CreateUserDto): Promise<CreateUserResDto> {
     await this.isEmailUniqueOrThrow(dto.email);
@@ -57,6 +58,7 @@ export class UserService {
         link,
       },
     );
+    console.log(activateToken);
     return (await ObjectMapper.getMapped<typeof _user>(_user, [
       'password',
     ])) as CreateUserResDto;

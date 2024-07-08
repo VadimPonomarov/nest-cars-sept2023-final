@@ -10,7 +10,6 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
-  ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation, ApiParam,
   ApiTags,
@@ -80,7 +79,7 @@ export class UserController {
   @ApiParam({ name: 'activateToken', type: String, required: true })
   @Get('activate/:activateToken')
   async activate(
-    @Param() activateToken: string,
+    @Param('activateToken') activateToken: string,
     @Request() req,
   ): Promise<string> {
     await this.userService.activate(req.user.email);
