@@ -21,7 +21,8 @@ export class AdsService {
     private readonly userRepository: UserRepository,
     private readonly gptService: GptService,
     private readonly googleService: GoogleService,
-  ) {}
+  ) {
+  }
 
   async createAds(
     userId: string,
@@ -52,6 +53,14 @@ export class AdsService {
     return await ObjectMapper.getMapped<CreateAdsResDto>(
       this.adsRepository.findOne({ where: { id: ads.id } }),
     );
+  }
+
+  async getAdsManyByUserId(userId: string): Promise<CreateAdsResDto[]> {
+    return await this.adsRepository.find({ where: { userId } });
+  }
+
+  async getAdsByAdsId(id: string): Promise<CreateAdsResDto> {
+    return await this.adsRepository.find({ where: { id } });
   }
 
   async getActiveAdsNumberByUserId(userId: string): Promise<any> {

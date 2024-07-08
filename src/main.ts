@@ -35,7 +35,7 @@ async function bootstrap() {
     try {
       Logger.log(`Server is running on port: ${appConf.PORT}`);
       console.log(
-        `Swagger running on http://${appConfig.HOST}:${appConfig.PORT}/docs`,
+        `Swagger running on ${appConfig.HOST}:${appConfig.PORT}/docs`,
       );
     } catch (e) {
       Logger.error(e);
