@@ -1,18 +1,33 @@
-import { Body, Controller, Param, ParseUUIDPipe, Patch, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { AccountsEnum } from '../../../common/enums/accounts.enum';
 import { RolesActionEnum, RolesEnum } from '../../../common/enums/roles.enum';
+import { AdsService } from '../../ads/ads.service';
+import { UpdateAdsDto } from '../../ads/dto/req/update.ads.dto';
+import { CreateAdsResDto } from '../../ads/dto/res/create.ads.res.dto';
 import { JwtSkipAuthGuard } from '../../auth/guards/jwt.skip.auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { UserEntity } from '../../db/entities/user.entity';
 import { SetSuperAdminDto } from '../dto/req/set.admin.dto';
 import { UpdateRolesDto } from '../dto/req/update.roles.dto';
 import { AdminService } from './admin.service';
-import { UpdateAdsDto } from '../../ads/dto/req/update.ads.dto';
-import { CreateAdsResDto } from '../../ads/dto/res/create.ads.res.dto';
-import { AdsService } from '../../ads/ads.service';
 
 /*---------------------*/
 
@@ -21,9 +36,10 @@ import { AdsService } from '../../ads/ads.service';
 @ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService,
-              private readonly adsService: AdsService) {
-  }
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly adsService: AdsService,
+  ) {}
 
   @ApiOperation({
     summary: 'Grants current User roles of SuperUser. Secret JWT is required',
@@ -69,7 +85,12 @@ export class AdminController {
     required: true,
   })
   @Roles([RolesEnum.ADMIN])
-  @ApiParam({ name: 'action', enum: AccountsEnum, type: 'enum', required: true })
+  @ApiParam({
+    name: 'action',
+    enum: AccountsEnum,
+    type: 'enum',
+    required: true,
+  })
   @ApiParam({ name: 'userEmail', type: String, required: true })
   @Patch('roles/:action/:userEmail')
   async grantRoles(
@@ -134,16 +155,15 @@ export class AdminController {
   async updateUser(
     @Param('userEmail') userEmail: string,
     @Body() updateDto: UpdateRolesDto,
-    @Request() req,
   ): Promise<Partial<UserEntity>> {
     return await this.adminService.updateUserByEmail(userEmail, updateDto);
   }
 
-/*---------------------*/
+  /*---------------------*/
 
   @Roles([RolesEnum.ADMIN, RolesEnum.MANAGER])
   @ApiOperation({
-    summary: 'Admin and manager can update ads by it\'s Id',
+    summary: "Admin and manager can update ads by it's Id",
   })
   @ApiParam({ name: 'adsId', type: String, required: true })
   @Patch(':adsId')
@@ -154,6 +174,3 @@ export class AdminController {
     return await this.adsService.updateAdsByIdWithoutTextValidation(adsId, dto);
   }
 }
-
-
-

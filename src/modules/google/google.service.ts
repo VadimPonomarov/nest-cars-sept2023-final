@@ -1,5 +1,5 @@
 import * as Client from '@google/maps';
-import { type CreateClientOptions, Language } from '@google/maps';
+import { type CreateClientOptions } from '@google/maps';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -27,7 +27,7 @@ export class GoogleService {
           input: Object.values(input).join(),
         })
         .asPromise();
-      const { place_id, description, terms } =
+      const { place_id, description } =
         await _response.json.predictions[0];
       const _mapped: IGeoCodes = {
         country: await this.getCode(input.country),
@@ -48,7 +48,7 @@ export class GoogleService {
           input,
         })
         .asPromise();
-      return await _response.json.predictions[0].place_id;
+      return _response.json.predictions[0].place_id;
     } catch (e) {
       throw e;
     }

@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+
 import { CarAdsEntity } from './car.ads.entity';
 import { BaseModel } from './models/base.model';
 
@@ -10,8 +11,7 @@ export class AdsPhotoEntity extends BaseModel {
   @Column({ name: 'car_ads_id' })
   carAdsId: string;
 
-  @ManyToOne(() => CarAdsEntity, entity => entity.photos)
+  @ManyToOne(() => CarAdsEntity, (entity) => entity.photos)
   @JoinColumn({ name: 'car_ads_id' })
   carAds: CarAdsEntity;
-
 }

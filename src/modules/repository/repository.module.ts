@@ -1,10 +1,10 @@
 import { Global, Module } from '@nestjs/common';
 
 import { AccountRepository } from './services/account.repository';
+import { AdsPhotoRepository } from './services/ads.photo.repository';
 import { AdsRepository } from './services/ads.repository';
 import { JwtRegisterRepository } from './services/jwt.repository';
 import { UserRepository } from './services/user.repository';
-import { AdsPhotoRepository } from './services/ads.photo.repository';
 
 @Global()
 @Module({
@@ -13,14 +13,14 @@ import { AdsPhotoRepository } from './services/ads.photo.repository';
     JwtRegisterRepository,
     AdsRepository,
     AccountRepository,
-    AdsPhotoRepository
+    AdsPhotoRepository,
   ],
   exports: [
     UserRepository,
     JwtRegisterRepository,
     AdsRepository,
     AccountRepository,
-    AdsPhotoRepository
+    AdsPhotoRepository,
   ],
 })
 export class RepositoryModule {}

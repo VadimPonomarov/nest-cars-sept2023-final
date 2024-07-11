@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsEmail, IsString, IsUUID, Length } from 'class-validator';
 
-import { RolesEnum } from '../../../common/enums/roles.enum';
 import { AccountEntity } from '../../db/entities/account.entity';
 import { CarAdsEntity } from '../../db/entities/car.ads.entity';
 import { UserEntity } from '../../db/entities/user.entity';

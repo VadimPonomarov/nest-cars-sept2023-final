@@ -1,20 +1,27 @@
-import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { includes, takeRight } from 'lodash';
 
+import { ContentType } from '../../common/enums/s3.enum';
 import { ObjectMapper } from '../../common/mappers/object.mapper';
+import { CarAdsEntity } from '../db/entities/car.ads.entity';
+import { FileStorageService } from '../file-storage/file-storage.service';
 import { GptTasks } from '../g4f/constants/gpt.tasks';
 import { GptService } from '../g4f/gpt.service';
 import { GoogleService } from '../google/google.service';
-import { IGeoCodes, IPlaceAutocomplete } from '../google/interfaces/place.autocomplete.input.interface';
+import {
+  IGeoCodes,
+  IPlaceAutocomplete,
+} from '../google/interfaces/place.autocomplete.input.interface';
+import { AdsPhotoRepository } from '../repository/services/ads.photo.repository';
 import { AdsRepository } from '../repository/services/ads.repository';
 import { UserRepository } from '../repository/services/user.repository';
 import { CreateAdsDto } from './dto/req/create.ads.dto';
-import { CreateAdsResDto } from './dto/res/create.ads.res.dto';
 import { UpdateAdsDto } from './dto/req/update.ads.dto';
-import { CarAdsEntity } from '../db/entities/car.ads.entity';
-import { FileStorageService } from '../file-storage/file-storage.service';
-import { ContentType } from '../../common/enums/s3.enum';
-import { AdsPhotoRepository } from '../repository/services/ads.photo.repository';
+import { CreateAdsResDto } from './dto/res/create.ads.res.dto';
 
 @Injectable()
 export class AdsService {
@@ -25,8 +32,7 @@ export class AdsService {
     private readonly googleService: GoogleService,
     private readonly fileStorageService: FileStorageService,
     private readonly photosRepository: AdsPhotoRepository,
-  ) {
-  }
+  ) {}
 
   async createAds(
     userId: string,
@@ -65,15 +71,20 @@ export class AdsService {
     photo: Express.Multer.File[],
   ): Promise<CreateAdsResDto> {
     if (!photo.length) throw new NotAcceptableException();
-    const _ads = await this.adsRepository.findOneByOrFail({ userId, id: adsId });
+    await this.adsRepository.findOneByOrFail({
+      userId,
+      id: adsId,
+    });
     await Promise.all(
-      photo.map(async item => {
+      photo.map(async (item) => {
         const fileName = await this.fileStorageService.uploadFile(
           item,
           ContentType.PHOTO,
           adsId,
         );
-        return this.photosRepository.save(this.photosRepository.create({ carAdsId: adsId, fileName }));
+        return await this.photosRepository.save(
+          this.photosRepository.create({ carAdsId: adsId, fileName }),
+        );
       }),
     );
     return await this.adsRepository.find({
@@ -83,7 +94,10 @@ export class AdsService {
     });
   }
 
-  async deleteAdsPhoto(userId: string, fileName: string): Promise<CreateAdsResDto> {
+  async deleteAdsPhoto(
+    userId: string,
+    fileName: string,
+  ): Promise<CreateAdsResDto> {
     const _ads = await this.adsRepository.findOne({
       where: { userId, photos: { fileName } },
     });
@@ -159,12 +173,16 @@ export class AdsService {
   }
 
   async getNonActiveAdsNumberByUserId(userId: string): Promise<any> {
-    return await this.adsRepository.findBy({ userId }).then(res => res.length);
+    return await this.adsRepository
+      .findBy({ userId })
+      .then((res) => res.length);
   }
 
   async validateText(text: string): Promise<string> {
     await this.gptService.addTask(text);
-    return await this.gptService.chat().then(resp => resp.replaceAll('"', ''));
+    return await this.gptService
+      .chat()
+      .then((resp) => resp.replaceAll('"', ''));
   }
 
   async getGeo(dto: IPlaceAutocomplete): Promise<any> {
@@ -172,7 +190,7 @@ export class AdsService {
       string, //geocode autocompleted
       string, //address autocompleted
       IGeoCodes, //geocodes: country, region, locality,
-    ]
+    ];
     const _res = (await this.googleService.placeAutocomplete(
       dto,
     )) as GetGeoResType;

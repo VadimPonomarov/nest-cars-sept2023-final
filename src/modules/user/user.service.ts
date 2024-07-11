@@ -2,7 +2,7 @@ import {
   ConflictException,
   forwardRef,
   Inject,
-  Injectable,
+  Injectable, Logger,
 } from '@nestjs/common';
 import { hashSync } from 'bcryptjs';
 
@@ -30,8 +30,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly accountRepository: AccountRepository,
     private readonly mailService: MailService,
-  ) {
-  }
+  ) {}
 
   public async create(dto: CreateUserDto): Promise<CreateUserResDto> {
     await this.isEmailUniqueOrThrow(dto.email);
@@ -58,7 +57,7 @@ export class UserService {
         link,
       },
     );
-    console.log(activateToken);
+    Logger.log(activateToken);
     return (await ObjectMapper.getMapped<typeof _user>(_user, [
       'password',
     ])) as CreateUserResDto;

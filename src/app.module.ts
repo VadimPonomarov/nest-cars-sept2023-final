@@ -1,10 +1,10 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import customConfig from './common/configuration/configuration';
-import { GptModule } from './modules/./g4f/gpt.module';
+import { GptModule } from './modules/g4f/gpt.module';
 import { AdsModule } from './modules/ads/ads.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DbModule } from './modules/db/db.module';

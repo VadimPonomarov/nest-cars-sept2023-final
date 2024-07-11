@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -9,14 +10,14 @@ import {
   Max,
   MaxLength,
   Min,
-  MinLength, ValidateNested,
+  MinLength,
+  ValidateNested,
 } from 'class-validator';
 
 import { CurrenciesEnum } from '../../../common/enums/currencies.enum';
+import { AdsPhotoEntity } from '../../db/entities/ads.photo.entity';
 import { CarAdsEntity } from '../../db/entities/car.ads.entity';
 import { UserEntity } from '../../db/entities/user.entity';
-import { AdsPhotoEntity } from '../../db/entities/ads.photo.entity';
-import { Type } from 'class-transformer';
 
 export class AdsBaseDto implements CarAdsEntity {
   @IsUUID()

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { G4F } from 'g4f';
 
-import { GptTasks } from './constants/gpt.tasks';
 import { GptModelsEnum } from './enums/gpt.models.enum';
 import { IGptConfigOptions } from './types/config.options.interface';
 import { IMessage } from './types/message.interface';

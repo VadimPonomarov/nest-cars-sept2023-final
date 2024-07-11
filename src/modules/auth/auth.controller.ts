@@ -81,7 +81,7 @@ export class AuthController {
   @ApiForbiddenResponse({ description: 'Forbidden' })
   @ApiOkResponse({ description: 'Returns token pair' })
   @Post('refresh')
-  async refresh(@Request() req, @Body() dto: RefreshDto): Promise<JwtPairType> {
+  async refresh(@Request() req): Promise<JwtPairType> {
     return await this.authService.login(req.user);
   }
 }

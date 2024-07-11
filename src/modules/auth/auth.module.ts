@@ -8,7 +8,6 @@ import {
 } from '../../common/configuration/configuration';
 import { AdsModule } from '../ads/ads.module';
 import { RepositoryModule } from '../repository/repository.module';
-import { AdminService } from '../user/admin/admin.service';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';

@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
-import { RolesEnum } from '../../../common/enums/roles.enum';
 import { AccountEntity } from './account.entity';
 import { CarAdsEntity } from './car.ads.entity';
 import { BaseModel } from './models/base.model';

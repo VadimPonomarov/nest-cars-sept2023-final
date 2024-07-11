@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { CurrenciesEnum } from '../../../common/enums/currencies.enum';
+import { AdsPhotoEntity } from './ads.photo.entity';
 import { BaseModel } from './models/base.model';
 import { UserEntity } from './user.entity';
-import { AdsPhotoEntity } from './ads.photo.entity';
 
 @Entity({ name: 'ads' })
 export class CarAdsEntity extends BaseModel {
@@ -50,7 +50,7 @@ export class CarAdsEntity extends BaseModel {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @OneToMany(() => AdsPhotoEntity, entity => entity.carAds)
+  @OneToMany(() => AdsPhotoEntity, (entity) => entity.carAds)
   photos?: AdsPhotoEntity[];
 
   @Column({ default: false })

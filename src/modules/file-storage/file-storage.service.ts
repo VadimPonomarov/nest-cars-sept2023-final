@@ -1,18 +1,25 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { v4 } from 'uuid';
+import * as path from 'node:path';
+
 import {
   DeleteObjectCommand,
   PutObjectCommand,
-  S3Client, S3ClientConfig,
+  S3Client,
+  S3ClientConfig,
 } from '@aws-sdk/client-s3';
-import { configService, ConfigType } from '../../common/configuration/configuration';
-import * as path from 'node:path';
+import { Injectable, Logger } from '@nestjs/common';
+import { v4 } from 'uuid';
+
+import {
+  configService,
+  ConfigType,
+} from '../../common/configuration/configuration';
 import { ContentType } from '../../common/enums/s3.enum';
 
 @Injectable()
 export class FileStorageService {
   private client: S3Client;
-  private awsConfig: ConfigType['aws'] = configService.get<ConfigType['aws']>('aws');
+  private awsConfig: ConfigType['aws'] =
+    configService.get<ConfigType['aws']>('aws');
   private logger: Logger = new Logger();
 
   constructor() {
@@ -37,7 +44,11 @@ export class FileStorageService {
     itemId: string,
   ): Promise<string> {
     try {
-      const filePath = await this.buildPath(itemType, itemId, file.originalname);
+      const filePath = await this.buildPath(
+        itemType,
+        itemId,
+        file.originalname,
+      );
       await this.client.send(
         new PutObjectCommand({
           Bucket: this.awsConfig.AWS_S3_BUCKET_NAME,
@@ -71,6 +82,6 @@ export class FileStorageService {
     itemId: string,
     fileName: string,
   ): Promise<string> {
-    return await `${itemType}/${itemId}/${v4()}${path.extname(fileName)}`; // use only  template string
+    return `${itemType}/${itemId}/${v4()}${path.extname(fileName)}`; // use only  template string
   }
 }
