@@ -10,7 +10,6 @@ import { GoogleService } from './modules/google/google.service';
 @ApiExcludeController()
 @Controller()
 export class AppController {
-  constructor(private readonly googleService: GoogleService) {}
 
   @SkipJwtAuth()
   @Get()
