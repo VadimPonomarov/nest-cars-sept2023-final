@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { CurrenciesEnum } from '../../../common/enums/currencies.enum';
 import { BaseModel } from './models/base.model';
 import { UserEntity } from './user.entity';
+import { AdsPhotoEntity } from './ads.photo.entity';
 
 @Entity({ name: 'ads' })
 export class CarAdsEntity extends BaseModel {
@@ -48,6 +49,9 @@ export class CarAdsEntity extends BaseModel {
   @ManyToOne(() => UserEntity, (entity) => entity.ads, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
+
+  @OneToMany(() => AdsPhotoEntity, entity => entity.carAds)
+  photos?: AdsPhotoEntity[];
 
   @Column({ default: false })
   isActive: boolean;

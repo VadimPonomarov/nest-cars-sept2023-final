@@ -1,22 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsBoolean,
   IsInt,
   IsNumber,
   IsString,
   IsUUID,
-  Length,
-  MAX,
   Max,
   MaxLength,
-  MIN,
   Min,
-  MinLength,
+  MinLength, ValidateNested,
 } from 'class-validator';
 
 import { CurrenciesEnum } from '../../../common/enums/currencies.enum';
 import { CarAdsEntity } from '../../db/entities/car.ads.entity';
 import { UserEntity } from '../../db/entities/user.entity';
+import { AdsPhotoEntity } from '../../db/entities/ads.photo.entity';
+import { Type } from 'class-transformer';
 
 export class AdsBaseDto implements CarAdsEntity {
   @IsUUID()
@@ -106,6 +106,12 @@ export class AdsBaseDto implements CarAdsEntity {
   userId: string;
 
   @IsBoolean()
-  @ApiProperty({ nullable: true, default: false })
+  @ApiProperty({ default: false })
   isActive: boolean;
+
+  @IsArray()
+  @Type(() => AdsPhotoEntity)
+  @ValidateNested({ each: true })
+  @ApiProperty({ type: AdsPhotoEntity, nullable: true, default: null })
+  photos?: AdsPhotoEntity[];
 }

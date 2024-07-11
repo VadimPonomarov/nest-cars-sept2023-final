@@ -2,6 +2,7 @@
 import { LogsModule } from './logs/logs.module';
 import { LoggerModule } from './logger/logger.module';
 import { LoggerModule } from './modules/logger/logger.module';
+import { FileStorageModule } from './modules/file-storage/file-storage.module';
 import { AddsModule } from './modules/adds/adds.module';
 import { NewGooService } from './modules/new-goo/new-goo.service';
 import { GoogleModule } from './modules/google/google.module';

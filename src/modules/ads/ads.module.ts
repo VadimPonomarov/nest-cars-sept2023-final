@@ -7,9 +7,10 @@ import { UserModule } from '../user/user.module';
 import { AdsController } from './ads.controller';
 import { AdsService } from './ads.service';
 import { GptModule } from '../g4f/gpt.module';
+import { FileStorageModule } from '../file-storage/file-storage.module';
 
 @Module({
-  imports: [RepositoryModule, GoogleModule, GptModule, AuthModule, forwardRef(() => UserModule)],
+  imports: [RepositoryModule, GoogleModule, GptModule, AuthModule, forwardRef(() => UserModule), FileStorageModule],
   controllers: [AdsController],
   providers: [AdsService],
   exports: [AdsService],

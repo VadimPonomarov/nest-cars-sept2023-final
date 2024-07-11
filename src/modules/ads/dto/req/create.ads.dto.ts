@@ -9,4 +9,5 @@ export class CreateAdsDto extends OmitType(AdsBaseDto, [
   'created',
   'userId',
   'user',
+  'photos'
 ]) {}

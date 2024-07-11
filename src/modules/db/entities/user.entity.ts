@@ -32,9 +32,9 @@ export class UserEntity extends BaseModel {
   @JoinColumn({ name: 'account_id' })
   account?: AccountEntity;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   roles?: string;
 
-  @OneToMany(() => CarAdsEntity, (entity) => entity.user)
+  @OneToMany(() => CarAdsEntity, (entity) => entity.user, { nullable: true })
   ads?: CarAdsEntity[];
 }

@@ -8,10 +8,10 @@ import {
   ParseUUIDPipe, Patch,
   Post,
   Request,
-  Res,
-  UseGuards,
+  Res, UploadedFiles,
+  UseGuards, UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth,  ApiConsumes, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
 import { JwtSkipAuthGuard } from '../auth/guards/jwt.skip.auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -22,7 +22,9 @@ import { CreateAdsResDto } from './dto/res/create.ads.res.dto';
 import { RolesEnum } from '../../common/enums/roles.enum';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Response } from 'express';
-import { UpdateAdsDto } from './dto/req/update.ads.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilePhotoDto } from './dto/file.photo.dto';
+import { ApiFile } from '../../common/decorators/api-file.decorator';
 
 @UseGuards(JwtSkipAuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -44,18 +46,36 @@ export class AdsController {
     return await this.adsService.createAds(req.user.id, dto);
   }
 
+
   @ApiOperation({
-    summary: 'Update current User\'s ads by it\'s Id',
+    summary: 'Updating current User\'s ads by Id, adding list of photos',
   })
-  @ApiParam({ name: 'adsId', type: String, required: true })
-  @Patch(':adsId')
-  async updateAds(
+  @UseInterceptors(FilesInterceptor('photos'))
+  @ApiConsumes('multipart/form-data')
+  @ApiFile('photos')
+  @Patch('photos/:adsId')
+  async addPhotosAds(
     @Request() req,
     @Param('adsId', ParseUUIDPipe) adsId: string,
-    @Body() dto: UpdateAdsDto,
-  ): Promise<Partial<CreateAdsResDto>> {
-    return await this.adsService.updateAdsById(req.user.id, adsId, dto);
+    @Body() dto: FilePhotoDto[],
+    @UploadedFiles() photos: Express.Multer.File[],
+  ): Promise<CreateAdsResDto> {
+    return await this.adsService.createAdsPhotos(req.user.id, adsId, photos);
   }
+
+
+  @ApiOperation({
+    summary: 'Deleting current User\'s ads photo by photo attribute "fileName"',
+  })
+  @ApiParam({ name: 'fileName', type: String, required: true })
+  @Delete('photos/:fileName')
+  async deletePhotosAds(
+    @Request() req,
+    @Param() fileName: { fileName: string },
+  ): Promise<CreateAdsResDto> {
+    return await this.adsService.deleteAdsPhoto(req.user.id, fileName.fileName);
+  }
+
 
   @ApiOperation({
     summary: 'Get current User\'s list of ads by adsId',

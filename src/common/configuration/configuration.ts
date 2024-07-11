@@ -123,6 +123,14 @@ const customConfig = () => ({
     Promise: Promise,
     language: (process.env.GOOG_MAPS_LANGUAGE || 'en') as Language,
   } as CreateClientOptions,
+
+  aws: {
+    AWS_S3_BUCKET_ENDPOINT: process.env.AWS_S3_BUCKET_ENDPOINT,
+    AWS_S3_BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME,
+    AWS_S3_BUCKET_REGION: process.env.AWS_S3_BUCKET_REGION,
+    AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY,
+    AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,
+  },
 });
 
 export default () => customConfig();
